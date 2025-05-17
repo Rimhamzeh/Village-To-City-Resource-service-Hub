@@ -1,0 +1,64 @@
+.storePage {
+    background-color: #f4f5f7;
+
+}
+
+.storeH1{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+ font-size: 20px;
+ padding-top: 15px;
+}
+
+.store-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .store-logo img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .store-info {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .store-info h2 {
+    margin-bottom: 10px;
+    color: black;
+  }
+  
+  .store-contact {
+    min-width: 200px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .store-contact p {
+    margin: 0 0 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .store-header {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .store-contact {
+      width: 100%;
+    }
+  }
+  

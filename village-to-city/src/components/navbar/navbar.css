@@ -1,0 +1,109 @@
+.navbar {
+  position:relative;
+  z-index: 10000; 
+  min-height: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #e4eced;
+  padding: 20px 30px;
+  align-items: center;
+  border-bottom: 2px solid hsla(0, 0%, 52.2%, 0.1);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: moveup 0.5s linear forwards;
+}
+@keyframes moveup{
+  100%{
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+.navbar__left-side__logo__text{
+  margin-left: 10px;
+}
+.navbar__left-side .navbar__left-side__logo .navbar__left-side__text{
+    
+  font-size: 60px;
+
+        
+}
+        @media screen and (max-width: 900px) {
+          .navbar__left-side .navbar__left-side__logo .navbar__left-side__text{
+          font-size: 15px;
+        }
+      }
+  
+
+  .navbar__right-side{
+    display: flex;
+     justify-content: space-between;  
+    gap: 20px; 
+    margin-right: 40px;
+   font-size: 20px;
+   
+  }  
+  
+    .navbar__right-side__item {
+      display: inline-flex; 
+      align-items: center;
+      padding: 10px 15px; 
+      text-decoration: none;
+      font-size: 18px;
+      opacity: 0.8;
+      font-weight: bold;
+    margin-right: 100px;
+    
+  
+    }
+ 
+      .navbar__right-side__btn{
+        background-color: #d6aa8d;
+        color: black;
+        font-weight: bold;
+      }
+    
+    
+   .navbar__right-side__icon {
+      font-size: 25px;
+     
+    }
+ /* .navbar__right-side--cart-count{
+  padding: 0 10px 0 0;
+ } */
+ /* .navbar__right-side__cart-count {
+  border-radius: 50%;
+  background-color: blue;
+  color: white;
+  padding: 5px 10px;
+} */
+.navbar__right-side__item--cart-count {
+  position: relative;
+}
+
+.navbar__right-side__cart-count {
+  position: absolute;
+  top: 50%;
+  left: 69%; /* Exactly to the right of the cart icon */
+  transform: translate(0, -50%); /* Center vertically */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  z-index: 10;
+  animation: popIn 0.3s ease-in-out;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); }
+}

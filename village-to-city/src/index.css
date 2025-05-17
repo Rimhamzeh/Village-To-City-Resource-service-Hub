@@ -1,0 +1,59 @@
+@import"./styles/Store.css";
+@import "./components/navbar/navbar.css";
+@import "./components/HomePage/home.css";
+@import"./styles/product.css";
+@import"./components/product-card/product-card.css";
+@import"./components/navbar/mobile-menu/mobile-menu.css";
+@import "./styles/Login.css";
+@import "./styles/StoreVisit.css";
+@import"./styles/authenticate.css";
+@import"./components/adminDashboard/adminDashboard.css";
+@import "./components/login-form/login.css";
+@import "./styles/productTable.css";
+@import "./components/cart-card/cart-card.css";
+@import "./styles/cart.css";
+@import "./styles/checkout.css";
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  padding: 0 ;
+  margin: 0 ;
+  box-sizing: border-box;
+}
+  a {
+    text-decoration: none ;
+    color:black  ;
+  }
+  
+  button {
+    letter-spacing: 1px !important;
+    opacity: 0.9 !important;
+    outline: 0 !important;
+    padding: 0 20px !important;
+    border: 0 !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    height: 40px !important;
+    color: #fff !important;
+    transition: all 0.5s ease-in-out !important;
+  }
+    button :hover {
+      opacity: 1 !important;
+    }
+  
+  
+    @import 'bootstrap/dist/css/bootstrap.min.css';
+   
