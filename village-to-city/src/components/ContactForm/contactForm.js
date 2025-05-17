@@ -24,7 +24,7 @@ function ContactForm() {
         requestDate: serverTimestamp(),
       });
   
-      // Clear form
+     
       setFirstName("");
       setLastName("");
       setEmail("");

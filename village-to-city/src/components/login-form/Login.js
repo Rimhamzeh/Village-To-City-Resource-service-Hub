@@ -48,12 +48,11 @@ function Login({ setRegisterMode }) {
         setUser(res.user);
         console.log("User data:", res.user);
 
-        // Immediate navigation attempt
         const isAdminUser = res.user?.roleId?.id && isAdmin(res.user.roleId.id);
         const path = isAdminUser ? "/adminDashboard" : "/sellerDashboard";
         console.log("Navigating to:", path);
         
-        // Use replace to prevent going back to login page
+       
         window.location.href = path;
       } else {
         setError(getFrontendErrorMessage(res.error));

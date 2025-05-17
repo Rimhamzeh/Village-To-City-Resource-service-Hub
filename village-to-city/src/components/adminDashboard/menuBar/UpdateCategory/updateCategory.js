@@ -33,10 +33,10 @@ function UpdateCategory({ category, handleClose, refreshCategories }) {
     }
 
     try {
-      await updateCategory(category.id, inputs); // Update category
+      await updateCategory(category.id, inputs); 
       alert("Category updated!");
-      refreshCategories(); // Refresh category list
-      handleClose(); // Close modal
+      refreshCategories(); 
+      handleClose(); 
     } catch (error) {
       console.error("Error updating category:", error);
       alert("Failed to update category.");

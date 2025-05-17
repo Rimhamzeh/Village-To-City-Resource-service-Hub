@@ -16,16 +16,16 @@ export const ENV = {
     }
   };
   
-  // Helper function to get role name by id
+ 
   export const getRoleNameById = (id) => {
     const role = ENV.roles.find(r => r.id === id);
     return role ? role.name : 'Unknown Role';
   };
 
   export const isAdmin = (roleId) => {
-    console.log("Checking admin status for roleId:", roleId); // Add debugging
+    console.log("Checking admin status for roleId:", roleId);
     const role = ENV.roles.find(r => r.id === roleId);
-    console.log("Found role:", role); // Add debugging
+    console.log("Found role:", role); 
     return role?.name === 'Admin';
   };
 

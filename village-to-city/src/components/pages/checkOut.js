@@ -6,10 +6,10 @@ import { useMainContext } from "../../utils/context";
 function Checkout() {
   const { cartProducts, setCartProducts } = useMainContext();
   const [showAlert, setShowAlert] = useState(false);
-  const [loading, setLoading] = useState(true); // Spinner state
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    // Simulate loading delay
+   
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);

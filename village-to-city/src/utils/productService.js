@@ -186,7 +186,7 @@ export const getAllUsers = async () => {
 };
 export const getStoreById = async (storeId) => {
   try {
-    const docRef = doc(database, "users", storeId); // storeId is string
+    const docRef = doc(database, "users", storeId); 
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {

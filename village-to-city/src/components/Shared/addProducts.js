@@ -13,7 +13,7 @@ function AddProducts({ handleClose, refreshProducts }) {
   const isAdminUser = isAdmin(user.roleId.id);
   const [storeNames, setStoreNames] = useState([]);
   const [selectedStore, setSelectedStore] = useState("");
-  const [special, setSpecial] = useState(false); // Add this state to track special product
+  const [special, setSpecial] = useState(false); 
   const [image, setImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");

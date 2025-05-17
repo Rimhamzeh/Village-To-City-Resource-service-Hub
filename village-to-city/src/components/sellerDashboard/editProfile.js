@@ -7,7 +7,7 @@ function EditSellerProfile({ refreshUsers }) {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  // ✅ Initialize state with empty values
+ 
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
@@ -20,7 +20,7 @@ function EditSellerProfile({ refreshUsers }) {
     description: "",
   });
 
-  // ✅ Fetch user data and update state
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -46,13 +46,13 @@ function EditSellerProfile({ refreshUsers }) {
     if (userId) fetchUser();
   }, [userId]);
 
-  // ✅ Generic input handler
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInputs((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Image upload handler (Base64 conversion)
+ 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -64,12 +64,12 @@ function EditSellerProfile({ refreshUsers }) {
     reader.readAsDataURL(file);
   };
 
-  // ✅ Close button
+ 
   const handleClose = () => {
     navigate(-1);
   };
 
-  // ✅ Submit update
+  
  const handleSubmit = async () => {
   if (!inputs.firstName || !inputs.lastName || !inputs.email || !inputs.storeName) {
     alert("Please fill in all required fields.");
@@ -79,9 +79,9 @@ function EditSellerProfile({ refreshUsers }) {
   try {
     const updatedData = {
       ...inputs,
-      storeTypeSelected: inputs.storeTypeSelected,  // Save new selection to storeType
+      storeTypeSelected: inputs.storeTypeSelected, 
     };
-    delete updatedData.storeTypeSelected;   // Remove helper field before saving
+    delete updatedData.storeTypeSelected;  
 
     await updateUserProfile(userId, updatedData);
     alert("User profile updated successfully!");

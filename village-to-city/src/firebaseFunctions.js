@@ -60,7 +60,7 @@ export const registerUser = async (
             storeSince: storeSince,
             description: description,
             location: location,
-            roleId: { id: '2', name: 'Seller' } // Adding default role
+            roleId: { id: '2', name: 'Seller' } 
         })
         console.log("Data saved to Firestore for user:", user.uid);
         return { success: true }

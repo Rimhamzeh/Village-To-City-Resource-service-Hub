@@ -32,7 +32,7 @@ export const MainContextProvider = ({ children }) => {
           if (userDoc.exists()) {
             const userData = userDoc.data();
             
-            // Check if roleId exists, if not, set default role
+            
             if (!userData.roleId) {
               const defaultRole = { id: '2', name: 'Seller' };
               await updateDoc(userDocRef, {
@@ -41,7 +41,7 @@ export const MainContextProvider = ({ children }) => {
               userData.roleId = defaultRole;
             }
 
-            // Set user data in context
+           
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email,

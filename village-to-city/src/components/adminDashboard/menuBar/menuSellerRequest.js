@@ -1,5 +1,5 @@
 import { collection, getDocs } from "firebase/firestore";
-import { database } from "../../../FireBaseConf"; // adjust path if needed
+import { database } from "../../../FireBaseConf"; 
 import { useEffect, useState } from "react";
 
 function MenuSellerRequest() {

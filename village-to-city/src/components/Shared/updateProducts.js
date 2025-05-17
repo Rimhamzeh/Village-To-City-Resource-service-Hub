@@ -58,7 +58,7 @@ function UpdateProducts({ handleClose, productToEdit }) {
             (store) => store.email === currentUser?.email
           );
           if (myStore) {
-            setSelectedStore(myStore.id); // set by store.id for reference
+            setSelectedStore(myStore.id); 
           }
         }
       } catch (error) {
@@ -77,7 +77,7 @@ function UpdateProducts({ handleClose, productToEdit }) {
         price: productToEdit.price || "",
         wasPrice: productToEdit.wasPrice || "",
       });
-      setSelectedStore(productToEdit.storeRef?.id || ""); // Use storeRef.id here
+      setSelectedStore(productToEdit.storeRef?.id || ""); 
       setSpecial(productToEdit.special || false);
     }
   }, [productToEdit]);
@@ -95,7 +95,7 @@ function UpdateProducts({ handleClose, productToEdit }) {
   };
 
   const handleSpecialChange = (e) => {
-    setSpecial(e.target.checked); // Update the special state based on checkbox
+    setSpecial(e.target.checked); 
   };
 
   const toBase64 = (file) =>
@@ -114,8 +114,8 @@ function UpdateProducts({ handleClose, productToEdit }) {
           return;
         }
     
-        const storeRef = doc(database, "users", selectedStore); // Correct store reference
-        const categoryRef = doc(database, "categories", selectedCategoryId); // Correct category document reference
+        const storeRef = doc(database, "users", selectedStore);
+        const categoryRef = doc(database, "categories", selectedCategoryId); 
     
         const updatedData = {
           ...inputs,
@@ -124,7 +124,7 @@ function UpdateProducts({ handleClose, productToEdit }) {
           productImage: image ? await toBase64(image) : productToEdit.productImage,
           storeRef,
           special,
-          categoryRef, // Ensure categoryRef is valid
+          categoryRef, 
         };
     
         await updateProduct(productToEdit.id, updatedData);

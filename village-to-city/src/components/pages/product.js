@@ -17,7 +17,8 @@ function ProductPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [categories, setCategories] = useState([]); // State for categories
+  const [categories, setCategories] = useState([]); 
+  
 
   const location = useLocation();
 
@@ -35,7 +36,7 @@ function ProductPage() {
     const fetchProducts = async () => {
       const data = await getAllProducts();
   
-      // Fetch the storeTypeSelected for each product based on storeRef
+     
       const updatedProducts = await Promise.all(
         data.map(async (product) => {
           if (product.storeRef?.id) {
@@ -90,7 +91,7 @@ function ProductPage() {
     products,
   ]);
 
-  // Function to filter products
+  
   const filterProducts = () => {
     const filtered = products.filter((product) => {
       console.log("Product:", product.name, "StoreType:", product.storeTypeSelected);
@@ -108,11 +109,11 @@ function ProductPage() {
   ? product.categoryRef?.id === selectedCategory
   : true;
 
-      // Condition to show products based on checkboxes
+    
       const villageCityCondition =
-        showAllChecked || // Show all products if 'Show All' is checked
-        (villageChecked && matchesVillage) || // Only show Village Store if checkbox is checked
-        (cityChecked && matchesCity); // Only show City Store if checkbox is checked
+        showAllChecked || 
+        (villageChecked && matchesVillage) || 
+        (cityChecked && matchesCity); 
 
       return matchesSearchTerm && villageCityCondition && matchesCategory;
     });
@@ -120,7 +121,7 @@ function ProductPage() {
     setFilteredProducts(filtered);
   };
 
-  // Handle checkbox state changes for filters
+ 
   const handleVillageChange = () => {
     setVillageChecked((prev) => {
       const newState = !prev;
