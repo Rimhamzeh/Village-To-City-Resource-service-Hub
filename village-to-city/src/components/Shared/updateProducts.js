@@ -7,6 +7,8 @@ import { isAdmin } from "../../environment/environment";
 import { useMainContext } from "../../utils/context";
 import { getCategories } from "../../utils/productService";
 import { database } from "../../FireBaseConf";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 function UpdateProducts({ handleClose, productToEdit }) {
   const db = getFirestore();
@@ -106,35 +108,39 @@ function UpdateProducts({ handleClose, productToEdit }) {
       reader.onerror = (error) => reject(error);
     });
 
-    const handleUploadAndUpdateProduct = async () => {
-      try {
-        if (!selectedCategoryId) {
-          console.error("Category ID is missing");
-          alert("Please select a category.");
-          return;
-        }
-    
-        const storeRef = doc(database, "users", selectedStore);
-        const categoryRef = doc(database, "categories", selectedCategoryId); 
-    
-        const updatedData = {
-          ...inputs,
-          price: Number(inputs.price),
-          wasPrice: Number(inputs.wasPrice),
-          productImage: image ? await toBase64(image) : productToEdit.productImage,
-          storeRef,
-          special,
-          categoryRef, 
-        };
-    
-        await updateProduct(productToEdit.id, updatedData);
-        alert("Product updated successfully!");
-        handleClose();
-      } catch (error) {
-        console.error("Error updating product:", error);
-        alert("Error updating product.");
-      }
+   const handleUploadAndUpdateProduct = async () => {
+  try {
+    if (!selectedCategoryId) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Category Missing",
+        text: "Please select a category before updating the product.",
+      });
+    }
+
+    const storeRef = doc(database, "users", selectedStore);
+    const categoryRef = doc(database, "categories", selectedCategoryId);
+
+    const updatedData = {
+      ...inputs,
+      price: Number(inputs.price),
+      wasPrice: Number(inputs.wasPrice),
+      productImage: image ? await toBase64(image) : productToEdit.productImage,
+      storeRef,
+      special,
+      categoryRef,
     };
+
+    await updateProduct(productToEdit.id, updatedData);
+
+    toast.success("Product updated successfully!");
+
+    handleClose();
+  } catch (error) {
+    console.error("Error updating product:", error);
+    toast.error("Error updating product.");
+  }
+};
     
 
   return (

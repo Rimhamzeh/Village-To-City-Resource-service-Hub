@@ -1,7 +1,7 @@
 import { getAllUsers } from "../../../utils/productService";
 
 import { useEffect, useState } from "react";
-function MenyBuyers() {
+function MenuSellers() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -71,4 +71,4 @@ function MenyBuyers() {
   );
 }
 
-export default MenyBuyers;
+export default MenuSellers;

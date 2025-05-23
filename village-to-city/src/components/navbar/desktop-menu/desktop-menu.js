@@ -1,5 +1,5 @@
 import {Link, useLocation, useNavigate } from "react-router-dom";
-import { isCartSelected, isStoreSelected } from "../../../utils/checkRoutes";
+import { isCartSelected,isContactSelected,isHomeSelected ,isProductSelected,isStoreSelected } from "../../../utils/checkRoutes";
 import { FaShoppingCart } from "react-icons/fa";
 import { MdContactPhone } from "react-icons/md";
 import { IoStorefront } from "react-icons/io5";
@@ -16,7 +16,9 @@ function DesktopMenu() {
       <Link
         to="/"
         className={`navbar__right-side__item
-      ${isStoreSelected(loc.pathname) && "navbar__right-side__item--selected"}`}
+      ${
+        isHomeSelected(loc.pathname) && 
+        "navbar__right-side__item--selected"}`}
       >
        <FaHome />Home
       </Link>
@@ -24,7 +26,7 @@ function DesktopMenu() {
         to="/product"
         className={`navbar__right-side__item
               ${
-                isStoreSelected(loc.pathname) &&
+                isProductSelected(loc.pathname) &&
                 "navbar__right-side__item--selected"
               }`}
       >
@@ -59,7 +61,7 @@ function DesktopMenu() {
       <a
         href="/#contact-form"
         className={`navbar__right-side__item ${
-          isStoreSelected(loc.pathname) && "navbar__right-side__item--selected"
+          isContactSelected(loc.pathname) && "navbar__right-side__item--selected"
         }`}
       >
        <MdContactPhone />Contact Us
@@ -68,7 +70,7 @@ function DesktopMenu() {
 
       <button
         onClick={() => navigate("/authenticate")}
-        className="navbar__right-side__btn primary"
+        className="navbar__right-side__btn "
       >
         Login
       </button>

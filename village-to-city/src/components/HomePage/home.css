@@ -51,6 +51,9 @@
     text-align: center;
     cursor: pointer;
 }
+.SpecialProducts-h3:hover{
+    text-decoration: underline;
+}
   
 .contact-form {
     width: 100%;

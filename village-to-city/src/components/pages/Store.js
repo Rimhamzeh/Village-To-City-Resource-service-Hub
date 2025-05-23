@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import { GiVillage } from "react-icons/gi";
 import { FaCity } from "react-icons/fa6";
 import Footer from "../footer/footer";
+import { CiSearch } from "react-icons/ci";
 import StoreCard from "../storeCard/storeCard";
 import { getAllUsers } from "../../utils/productService";
 function Store() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [storeType, setStoreType] = useState(null);
   const [stores, setStores] = useState([]);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  
 
   useEffect(() => {
     const fetchStores = async () => {
@@ -29,10 +29,18 @@ function Store() {
   }, []);
 
   const filteredStores = stores.filter((store) => {
-    if (storeType === "village")
-      return store.storeTypeSelected === "Village Store";
-    if (storeType === "city") return store.storeTypeSelected === "City Store";
-    return true;
+    const matchesStoreType =
+      storeType === "village"
+        ? store.storeTypeSelected === "Village Store"
+        : storeType === "city"
+        ? store.storeTypeSelected === "City Store"
+        : true;
+
+    const matchesSearch = store.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    return matchesStoreType && matchesSearch;
   });
 
   const handleStoreSelection = (type) => {
@@ -45,9 +53,31 @@ function Store() {
         className="container-fluid bg-light py-5"
         style={{ borderRadius: "10px" }}
       >
-        <div className="row align-items-center justify-content-between px-4">
-          <div className="col-md-4">
+        <div className="row align-items-center justify-content-between px-2">
+          <div className="col-md-2">
             <h2 className="fw-bold text-dark Store__Title">Stores</h2>
+          </div>
+
+          <div className=" col-md-2  position-relative ">
+            <CiSearch
+              className="search-icon"
+              style={{
+                top: "50%",
+                left: "15px",
+                transform: "translateY(-50%)",
+                fontSize: "20px",
+                color: "#888",
+                zIndex: 2,
+              }}
+            />
+            <input
+              type="text"
+              className="form-control search-input text-center"
+              placeholder="Search for a store..."
+              style={{ marginRight: "50px" }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
 
           <div className="col-md-2 position-relative">
@@ -107,7 +137,7 @@ function Store() {
             )}
           </div>
 
-          <div className="col-md-4 text-end">
+          <div className="col-md-2 text-end">
             <img
               src="/images/StoreImage.png"
               alt="Stores Banner"

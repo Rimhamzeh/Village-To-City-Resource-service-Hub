@@ -3,6 +3,7 @@ import { database } from "../../FireBaseConf";
 import { FaPhoneVolume } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import Swal from "sweetalert2";
 function ContactForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -11,38 +12,49 @@ function ContactForm() {
   const [message, setMessage] = useState("");
 
   
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    try {
-      await addDoc(collection(database, "buyerRequests"), {
-        firstName,
-        lastName,
-        email,
-        phone,
-        message,
-        requestDate: serverTimestamp(),
-      });
-  
-     
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setMessage("");
-  
-      alert("Your request has been submitted!");
-    } catch (error) {
-      console.error("Error submitting request: ", error);
-      alert("Something went wrong. Please try again.");
-    }
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    await addDoc(collection(database, "buyerRequests"), {
+      firstName,
+      lastName,
+      email,
+      phone,
+      message,
+      requestDate: serverTimestamp(),
+    });
+
+    
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setMessage("");
+
+    Swal.fire({
+      icon: "success",
+      title: "Request Submitted!",
+      text: "Thank you for contacting us. We'll get back to you soon.",
+      timer: 2500,
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("Error submitting request: ", error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Submission Failed",
+      text: "Something went wrong. Please try again later.",
+    });
+  }
+};
   
 
   return (
     <section id="ContactUs" className="contact">
       <div className="contact-container">
-        <h1 className="contact-h1">Feel free to contact us for any question</h1>
+        <h1 className="contact-h1">Kindly review and share your feedback</h1>
         <div className="contact-info">
           <div className="contact-left">
             <h4 className="contact-phone_h3">

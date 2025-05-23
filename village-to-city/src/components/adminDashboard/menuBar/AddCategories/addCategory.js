@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
+import { toast } from "react-toastify";
 import { createCategory } from "../../../../utils/productService";
 
 function AddCategory({ handleClose, refreshCategories }) {
@@ -27,8 +28,8 @@ function AddCategory({ handleClose, refreshCategories }) {
     });
 
   const handleAddCategory = async () => {
-    if (!inputs.name || !inputs.description) {
-      alert("Please fill in all fields.");
+    if (!inputs.name || !inputs.description|| !image) {
+      toast.warn("Please fill in all fields.");
       return;
     }
 
@@ -44,12 +45,12 @@ function AddCategory({ handleClose, refreshCategories }) {
 
       await createCategory(categoryData);
 
-      alert("Category added successfully!");
+      toast.success("Category added successfully!");
       refreshCategories();
       handleClose();
     } catch (error) {
       console.error("Error adding category:", error);
-      alert("Failed to add category.");
+      toast.error("Failed to add category.");
     }
   };
 

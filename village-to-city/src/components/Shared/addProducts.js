@@ -8,16 +8,18 @@ import { doc } from "firebase/firestore";
 import { ColorRing } from "react-loader-spinner";
 import { database } from "../../FireBaseConf.js";
 import { getCategories } from "../../utils/productService";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 function AddProducts({ handleClose, refreshProducts }) {
   const { user } = useMainContext();
   const isAdminUser = isAdmin(user.roleId.id);
   const [storeNames, setStoreNames] = useState([]);
   const [selectedStore, setSelectedStore] = useState("");
-  const [special, setSpecial] = useState(false); 
+  const [special, setSpecial] = useState(false);
   const [image, setImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  
+
   const [inputs, setInputs] = useState({
     name: "",
     description: "",
@@ -31,8 +33,7 @@ function AddProducts({ handleClose, refreshProducts }) {
         const users = await getAllUsers();
         const stores = users.map((user) => ({
           uid: user.uid,
-          storeName:
-            user.name || "Unknown",
+          storeName: user.name || "Unknown",
         }));
 
         setStoreNames(stores);
@@ -62,64 +63,83 @@ function AddProducts({ handleClose, refreshProducts }) {
       reader.onerror = (error) => reject(error);
     });
 
-    const handleAddProduct = async () => {
-      let storeReference;
-    
-      if (isAdminUser) {
-        storeReference = doc(database, "users", selectedStore);
-      } else {
-        storeReference = doc(database, "users", user.uid);
-      }
-    
-      if (!selectedCategoryId) {
-        alert("Please select a category.");
-        return;
-      }
-    
-      const categoryRef = doc(database, "categories", selectedCategoryId);
-    
-      const priceNum = parseFloat(inputs.price);
-      const wasPriceNum = parseFloat(inputs.wasPrice);
-    
-      if (
-        !inputs.name ||
-        !inputs.description ||
-        isNaN(priceNum) ||
-        isNaN(wasPriceNum)
-      ) {
-        alert(
-          "Please fill in all fields with valid numbers for price and wasPrice."
-        );
-        return;
-      }
-    
-      try {
-        let productData = {
-          ...inputs,
-          special,
-          price: priceNum,
-          wasPrice: wasPriceNum,
-          storeRef: storeReference,
-          categoryRef: categoryRef, 
-        };
-    
-        if (image) {
-          const base64Image = await toBase64(image);
-          productData.productImage = base64Image;
-        }
-       
-        await createProduct(productData);
-        <ColorRing/>
-        refreshProducts();
-        handleClose();
-      } catch (error) {
-        alert("Failed to add product.");
-      }
-    };
-    
-  
+  const handleAddProduct = async () => {
+    let storeReference;
 
-  
+    if (isAdminUser) {
+      storeReference = doc(database, "users", selectedStore);
+    } else {
+      storeReference = doc(database, "users", user.uid);
+    }
+
+    if (!selectedCategoryId) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Category",
+        text: "Please select a category.",
+      });
+      return;
+    }
+
+    const categoryRef = doc(database, "categories", selectedCategoryId);
+
+    const priceNum = parseFloat(inputs.price);
+    const wasPriceNum = parseFloat(inputs.wasPrice);
+
+    if (
+      !inputs.name ||
+      !inputs.description ||
+      isNaN(priceNum) ||
+      isNaN(wasPriceNum)
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Input",
+        text: "Please fill in all fields with valid numbers for price and wasPrice.",
+      });
+      return;
+    }
+
+    try {
+      let productData = {
+        ...inputs,
+        special,
+        price: priceNum,
+        wasPrice: wasPriceNum,
+        storeRef: storeReference,
+        categoryRef: categoryRef,
+      };
+
+      if (image) {
+        const base64Image = await toBase64(image);
+        productData.productImage = base64Image;
+      }
+
+      await createProduct(productData);
+
+      toast.success("Product added successfully!");
+
+      refreshProducts();
+      handleClose();
+      <ColorRing />;
+      refreshProducts();
+      handleClose();
+    } catch (error) {
+      if (error.message === "DUPLICATE_PRODUCT") {
+        Swal.fire({
+          icon: "error",
+          title: "Duplicate Product",
+          text: "A product with this name already exists in your store.",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Failed to Add Product",
+          text: "An error occurred while adding the product.",
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {

@@ -9,7 +9,7 @@ function AdminDashboard() {
     setIsOpenedMenu(!isMenuOpened);
   };
 
-  const admin = "Admin Dashboard";
+  const admin = "Super Admin Dashboard";
   const role = "admin";
   return (
     <div className="container-fluid">

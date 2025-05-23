@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { updateUserProfile, getUserById } from "../../utils/productService";
 import { IoCloseSharp } from "react-icons/io5";
-
+import Swal from "sweetalert2";
 function EditSellerProfile({ refreshUsers }) {
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -72,24 +72,40 @@ function EditSellerProfile({ refreshUsers }) {
   
  const handleSubmit = async () => {
   if (!inputs.firstName || !inputs.lastName || !inputs.email || !inputs.storeName) {
-    alert("Please fill in all required fields.");
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Fields",
+      text: "Please fill in all required fields.",
+    });
     return;
   }
 
   try {
     const updatedData = {
       ...inputs,
-      storeTypeSelected: inputs.storeTypeSelected, 
+      storeTypeSelected: inputs.storeTypeSelected,
     };
-    delete updatedData.storeTypeSelected;  
+    delete updatedData.storeTypeSelected;
 
     await updateUserProfile(userId, updatedData);
-    alert("User profile updated successfully!");
+
+    await Swal.fire({
+      icon: "success",
+      title: "Profile Updated",
+      text: "User profile updated successfully!",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
     if (refreshUsers) refreshUsers();
     handleClose();
   } catch (error) {
     console.error("Error updating profile:", error);
-    alert("Failed to update profile.");
+    Swal.fire({
+      icon: "error",
+      title: "Update Failed",
+      text: "Failed to update profile.",
+    });
   }
 };
 

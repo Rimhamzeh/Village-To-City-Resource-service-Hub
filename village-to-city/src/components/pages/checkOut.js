@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { database } from "../../FireBaseConf";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { useMainContext } from "../../utils/context";
-
+import Swal from "sweetalert2";
 function Checkout() {
   const { cartProducts, setCartProducts } = useMainContext();
   const [showAlert, setShowAlert] = useState(false);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-   
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -51,7 +50,52 @@ function Checkout() {
     e.preventDefault();
 
     if (cartProducts.length === 0) {
-      alert("Your cart is empty");
+      Swal.fire({
+        icon: "warning",
+        title: "Cart is Empty",
+        text: "Please add items to your cart before checking out.",
+      });
+      return;
+    }
+
+    const { firstName, lastName, email, phone, country, city, address } =
+      buyerInfo;
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !country.trim() ||
+      !city.trim() ||
+      !address.trim()
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Incomplete Information",
+        text: "Please fill in all required fields.",
+      });
+      return;
+    }
+    const isValidEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+    if (!isValidEmail(buyerInfo.email)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: "Please enter a valid Email!",
+      });
+      return;
+    }
+    const lebanesePhoneRegex =
+      /^(?:\+961|0)?(1\d{1}|3\d{1}|7[0-9]|8[1-9]) ?\d{6,7}$/;
+    if (!lebanesePhoneRegex.test(phone.trim())) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Phone Number",
+        text: "Please enter a valid phone number.",
+      });
       return;
     }
 
@@ -63,14 +107,26 @@ function Checkout() {
         createdAt: Timestamp.now(),
       });
 
-      setShowAlert(true);
+      Swal.fire({
+        icon: "success",
+        title: "Order Placed",
+        text: "Thank you! Your order has been placed successfully.",
+        showConfirmButton: false,
+        timer: 2500,
+      });
+
       localStorage.removeItem("guestCart");
+      setCartProducts([]);
       setTimeout(() => {
         window.location.href = "/";
-      }, 2000);
+      }, 2500);
     } catch (error) {
       console.error("Error placing order:", error);
-      alert("Failed to place order. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Order Failed",
+        text: "Something went wrong. Please try again.",
+      });
     }
   };
 
@@ -86,32 +142,10 @@ function Checkout() {
 
   return (
     <div className="container my-5">
-      {showAlert && (
-        <div
-          className="toast show position-fixed bottom-0 end-0 m-3"
-          role="alert"
-          style={{ zIndex: 1055 }}
-        >
-          <div className="toast-header bg-success text-white">
-            ✅ Order Success!
-            <button
-              type="button"
-              className="btn-close btn-close-white ms-auto"
-              onClick={() => setShowAlert(false)}
-            ></button>
-          </div>
-          <div className="toast-body">
-            Your order has been placed successfully! Redirecting to homepage...
-          </div>
-        </div>
-      )}
       <h1 className="text-center mb-4">Checkout</h1>
       <div className="row g-4">
         <div className="col-md-7">
           <form onSubmit={handleSubmit} className="row g-3">
-            {/* Buyer Info Fields */}
-            {/* ... (keep this part as is) */}
-            {/* Delivery Address, Payment Method, Place Order button */}
             <div className="col-md-6">
               <label className="form-label">First Name</label>
               <input

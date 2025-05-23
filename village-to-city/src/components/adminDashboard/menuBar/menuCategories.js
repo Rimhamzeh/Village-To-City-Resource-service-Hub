@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import AddCategory from "./AddCategories/addCategory";
-import { getCategories, deleteCategory, updateCategory } from "../../../utils/productService";
-import UpdateCategory from "./UpdateCategory/updateCategory"; // Ensure this is imported
-
+import {
+  getCategories,
+  deleteCategory,
+  updateCategory,
+} from "../../../utils/productService";
+import UpdateCategory from "./UpdateCategory/updateCategory";
+import Swal from "sweetalert2";
 function MenuCategories() {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,7 +15,7 @@ function MenuCategories() {
   const [editingCategory, setEditingCategory] = useState(null);
 
   const handleEdit = (category) => {
-    setEditingCategory(category); 
+    setEditingCategory(category);
     setShowEditModal(true);
   };
 
@@ -27,31 +31,64 @@ function MenuCategories() {
   useEffect(() => {
     fetchCategories();
   }, []);
-
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
-      await deleteCategory(id);
-      fetchCategories();
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to delete this?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteCategory(id);
+        await fetchCategories();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Category has been deleted.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Error deleting category:", error);
+        Swal.fire({
+          title: "Failed!",
+          text: "There was a problem deleting the category.",
+          icon: "error",
+        });
+      }
     }
   };
 
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const togglePublished = async (cat) => {
+    try {
+      await updateCategory(cat.id, { published: !cat.published });
+      fetchCategories();
+    } catch (error) {
+      console.error("Failed to update published status:", error);
+    }
+  };
 
   return (
     <div>
       {showAddModal && (
         <AddCategory
-          category={editingCategory} 
+          category={editingCategory}
           handleClose={() => setShowAddModal(false)}
           refreshCategories={fetchCategories}
         />
       )}
-      
+
       {showEditModal && (
         <UpdateCategory
-          category={editingCategory} 
+          category={editingCategory}
           handleClose={() => setShowEditModal(false)}
           refreshCategories={fetchCategories}
         />
@@ -102,7 +139,12 @@ function MenuCategories() {
                     <img
                       src={cat.categoryImage}
                       alt={cat.name}
-                      style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "8px" }}
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
                     />
                   )}
                 </td>
@@ -116,7 +158,7 @@ function MenuCategories() {
                       type="checkbox"
                       className="sc-gJwTLC ikxBAC"
                       checked={cat.published || false}
-                      readOnly
+                      onChange={() => togglePublished(cat)}
                     />
                   </div>
                 </td>
@@ -124,7 +166,7 @@ function MenuCategories() {
                   <div className="tooltip-wrapper">
                     <button
                       className="btn btn-sm btn-outline-primary me-1"
-                      onClick={() => handleEdit(cat)} 
+                      onClick={() => handleEdit(cat)}
                     >
                       ✏️
                     </button>

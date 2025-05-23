@@ -14,6 +14,8 @@ import { ColorRing } from "react-loader-spinner";
 import { useMainContext } from "../../utils/context";
 import { doc, getDoc } from "firebase/firestore";
 import { database } from "../../FireBaseConf";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 function ProductTable({ userRole, sellerId }) {
   const [storeData, setStoreData] = useState({});
@@ -29,8 +31,7 @@ function ProductTable({ userRole, sellerId }) {
   const [storeNames, setStoreNames] = useState([]);
   const { user } = useMainContext();
   const [categories, setCategories] = useState([]);
-
-
+  const [publishedFilterChecked, setPublishedFilterChecked] = useState(false);
   useEffect(() => {
     const fetchStoreDetails = async () => {
       const uniqueStoreIds = [
@@ -133,19 +134,27 @@ function ProductTable({ userRole, sellerId }) {
     }
   };
 
-
   const handleDeleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) {
-      return;
-    }
-    try {
-      const success = await deleteProduct(id);
-      if (success) {
-        alert("Product deleted successfully!");
-        fetchProducts();
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const success = await deleteProduct(id);
+        if (success) {
+          toast.success("Product deleted successfully!");
+          fetchProducts();
+        }
+      } catch (error) {
+        toast.error("Failed to delete product.");
       }
-    } catch (error) {
-      alert("Failed to delete product.");
     }
   };
 
@@ -158,12 +167,16 @@ function ProductTable({ userRole, sellerId }) {
 
   useEffect(() => {
     const filtered = products.filter((product) => {
+      const passesPublishedFilter = publishedFilterChecked
+        ? product.published === true
+        : true;
+
       const matchesSearchTerm = product.name
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase());
 
       const matchesStoreName =
-        userRole === "admin" && storeNames.length > 0
+        storeNames.length > 0
           ? storeNames.some(
               (store) =>
                 store.uid === product.storeRef?.id &&
@@ -177,7 +190,12 @@ function ProductTable({ userRole, sellerId }) {
         ? product.categoryRef?.id === categoryFilter
         : true;
 
-      return matchesSearchTerm && matchesStoreName && matchesCategory;
+      return (
+        passesPublishedFilter &&
+        matchesSearchTerm &&
+        matchesStoreName &&
+        matchesCategory
+      );
     });
 
     setFilteredProducts(filtered);
@@ -188,8 +206,28 @@ function ProductTable({ userRole, sellerId }) {
     products,
     userRole,
     storeNames,
+    publishedFilterChecked,
   ]);
 
+  const handlePublishToggle = async (productId, currentPublishStatus) => {
+    try {
+      const updatedData = { published: !currentPublishStatus };
+      const success = await updateProduct(productId, updatedData);
+
+      if (success) {
+        setProducts((prev) =>
+          prev.map((product) =>
+            product.id === productId
+              ? { ...product, published: !currentPublishStatus }
+              : product
+          )
+        );
+        toast.success("Product publish status updated");
+      }
+    } catch (error) {
+      toast.error("Failed to update product publish status");
+    }
+  };
   if (loading) {
     return (
       <div
@@ -274,11 +312,13 @@ function ProductTable({ userRole, sellerId }) {
           </select>
         </div>
 
-        <div className="col-md-3">
-          <button className="btn btn-success" onClick={handleAddProduct}>
-            + Add Product
-          </button>
-        </div>
+        {userRole === "seller" && (
+          <div className="col-md-3">
+            <button className="btn btn-success" onClick={handleAddProduct}>
+              + Add Product
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="table-responsive">
@@ -293,8 +333,8 @@ function ProductTable({ userRole, sellerId }) {
               <th>Category</th>
               <th>Price</th>
               <th>Was Price</th>
-              <th>Published</th>
-              <th>Actions</th>
+              {userRole === "seller" && <th>Published</th>}
+              {userRole === "seller" && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -321,15 +361,15 @@ function ProductTable({ userRole, sellerId }) {
                         type="checkbox"
                         checked={product.special}
                         onChange={() =>
-                          userRole === "admin" &&
+                          userRole === "seller" &&
                           handleSpecialToggle(product.id, product.special)
                         }
-                        disabled={userRole !== "admin"}
+                        disabled={userRole !== "seller"}
                       />
                       <label
                         className="tgl-btn"
-                        data-tg-off="Nope"
-                        data-tg-on="Yeah!"
+                        data-tg-off="NotSpecial"
+                        data-tg-on="Special!"
                         htmlFor={`special-${index}`}
                       ></label>
                     </div>
@@ -354,31 +394,38 @@ function ProductTable({ userRole, sellerId }) {
                   <td className="centered-cell">
                     <strong>${product.wasPrice}</strong>
                   </td>
-
+                    {userRole === "seller" && (
                   <td className="centered-cell">
                     <div className="checkbox-wrapper-2 d-flex justify-content-center">
                       <input
                         className="sc-gJwTLC ikxBAC"
                         type="checkbox"
                         checked={product.published}
-                        readOnly
+                        onChange={() =>
+                          userRole === "seller" &&
+                          handlePublishToggle(product.id, product.published)
+                        }
+                        disabled={userRole !== "seller"}
                       />
                     </div>
                   </td>
-                  <td className="d-flex centered-cell">
-                    <button
-                      onClick={() => handleUpdateProduct(product)}
-                      className="btn btn-sm btn-outline-primary me-1"
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      onClick={() => handleDeleteProduct(product.id)}
-                      className="btn btn-sm btn-outline-danger"
-                    >
-                      🗑️
-                    </button>
-                  </td>
+                    )}
+                  {userRole === "seller" && (
+                    <td className="d-flex centered-cell">
+                      <button
+                        onClick={() => handleUpdateProduct(product)}
+                        className="btn btn-sm btn-outline-primary me-1"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProduct(product.id)}
+                        className="btn btn-sm btn-outline-danger"
+                      >
+                        🗑️
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             )}

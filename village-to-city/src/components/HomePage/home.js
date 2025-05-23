@@ -68,7 +68,7 @@ function Home() {
           ) : specialProducts.length > 0 ? (
             <div className="product">
               {specialProducts.map((product) => (
-                <ProductCard
+               product.published && <ProductCard
                   key={product.id}
                   product={product}
                   showActions={false}

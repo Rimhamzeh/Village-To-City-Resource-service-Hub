@@ -9,10 +9,9 @@ import { isAdmin } from "../../environment/environment";
 import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useMainContext } from "../../utils/context";
-import {RotatingSquare} from"react-loader-spinner";
+import { RotatingSquare } from "react-loader-spinner";
 
 function Login({ setRegisterMode }) {
- 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +23,7 @@ function Login({ setRegisterMode }) {
   const { user, setUser } = useMainContext();
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (user) {
       console.log("User state updated:", user);
@@ -39,6 +38,7 @@ function Login({ setRegisterMode }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       const res = await login(email, password);
@@ -46,20 +46,21 @@ function Login({ setRegisterMode }) {
 
       if (res.success) {
         setUser(res.user);
-        console.log("User data:", res.user);
-
         const isAdminUser = res.user?.roleId?.id && isAdmin(res.user.roleId.id);
         const path = isAdminUser ? "/adminDashboard" : "/sellerDashboard";
-        console.log("Navigating to:", path);
-        
-       
         window.location.href = path;
       } else {
-        setError(getFrontendErrorMessage(res.error));
+        const errorMessage = res.error?.message || res.error;
+        console.log("Login failed with error:", errorMessage);
+        if (errorMessage === "Your account is pending approval.") {
+          setError("Wait: Your account is pending approval.");
+        } else {
+          setError(getFrontendErrorMessage(errorMessage));
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError("An unexpected error occurred");
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -85,13 +86,13 @@ function Login({ setRegisterMode }) {
 
       <form onSubmit={handleLogin}>
         <div className="container-fluid main-container">
-          <div className=" d-flex justify-content-center align-items-center vh-100">
+          <div className="d-flex justify-content-center align-items-center vh-100">
             <div className="login-container row shadow p-4 bg-white rounded">
               <div className="login__right__side col">
-                <h1 className=" login__right__side__title text-center fw-bold mb-4">
+                <h1 className="login__right__side__title text-center fw-bold mb-4">
                   Login Page
                 </h1>
-                <div className=" logo col text-center d-flex justify-content-center align-items-center">
+                <div className="logo col text-center d-flex justify-content-center align-items-center">
                   <img
                     src="/images/icon.png"
                     alt="Village-to-City Resource & Service Hub"
@@ -101,28 +102,32 @@ function Login({ setRegisterMode }) {
 
                 <div className="mb-3">
                   <label className="form-label">Email Address</label>
-                  <br></br>
                   <input
                     type="text"
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError(null);
+                    }}
                     value={email}
                     id="email"
                     required
                     placeholder="Email Address"
-                    className="form-control login_input "
+                    className="form-control login_input"
                   />
                 </div>
 
                 <div className="mb-3">
                   <label className="form-label">Password:</label>
-                  <br></br>
                   <div className="position-relative">
                     <input
                       value={password}
                       id="password"
                       required
                       type={showPassword ? "text" : "password"}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setError(null);
+                      }}
                       placeholder="Password"
                       className="form-control login_input"
                     />
@@ -135,22 +140,28 @@ function Login({ setRegisterMode }) {
                     </span>
                   </div>
                 </div>
+
                 {error && (
-                  <div className="form__group">
-                    <div className="error form-text" style={{ color: "red" }}>
-                      {" "}
-                      {error}
-                    </div>
+                  <div
+                    className={`alert ${
+                      error === "Wait: Your account is pending approval."
+                        ? "alert-warning"
+                        : "alert-danger"
+                    } text-center`}
+                    role="alert"
+                  >
+                    {error}
                   </div>
                 )}
 
                 <div className="d-grid col-6 btn-login">
-                  <button type="submit" className=" btn btn-primary ">
+                  <button type="submit" className="btn btn-primary">
                     Login
                   </button>
                 </div>
+
                 <div className="mt-3">
-                  <p className="text-center " style={{ color: "black" }}>
+                  <p className="text-center" style={{ color: "black" }}>
                     Don't have an account?{" "}
                     <b
                       onClick={() => setRegisterMode(true)}

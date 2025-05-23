@@ -5,6 +5,9 @@
   justify-content: center;
   padding: 50px 20px;
 }
+.categoryProducts:hover{
+transform: scale(1.1) rotate(0.2deg);
+}
 .search-input-container {
   display: flex;
   justify-content: center;
@@ -20,7 +23,7 @@
 
 .search-input {
   width: 100%;
-  padding: 10px 15px 10px 40px; /* Add extra padding on the left for the icon */
+  padding: 10px 15px 10px 40px; 
   border-radius: 25px;
   border: 2px solid #ddd;
   background-color: #f9f9f9;
@@ -30,7 +33,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #5c6bc0; /* A nice blue color when focused */
+  border-color: #5c6bc0; 
   background-color: #fff;
 }
 

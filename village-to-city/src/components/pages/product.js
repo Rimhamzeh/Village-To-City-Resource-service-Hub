@@ -5,7 +5,7 @@ import ProductsList from "../product-card/productList";
 import { RotatingLines } from "react-loader-spinner";
 import { getCategories, getAllProducts } from "../../utils/productService"; 
 import { database } from "../../FireBaseConf";
-import { doc,getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
 
 function ProductPage() {
@@ -18,7 +18,11 @@ function ProductPage() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]); 
-  
+
+ 
+  const publishedCategories = categories.filter(cat => cat.published);
+
+  const publishedCategoryIds = new Set(publishedCategories.map(cat => cat.id));
 
   const location = useLocation();
 
@@ -32,11 +36,11 @@ function ProductPage() {
       setVillageChecked(false);
     }
   }, [location.search]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       const data = await getAllProducts();
   
-     
       const updatedProducts = await Promise.all(
         data.map(async (product) => {
           if (product.storeRef?.id) {
@@ -60,7 +64,7 @@ function ProductPage() {
         })
       );
   
-      console.log(updatedProducts);
+      
       setProducts(updatedProducts);
       setFilteredProducts(updatedProducts);
     };
@@ -68,7 +72,6 @@ function ProductPage() {
     fetchProducts();
   }, []);
 
- 
   useEffect(() => {
     const fetchCategories = async () => {
       const data = await getCategories();
@@ -79,7 +82,6 @@ function ProductPage() {
     fetchCategories();
   }, []);
 
-
   useEffect(() => {
     filterProducts();
   }, [
@@ -88,13 +90,12 @@ function ProductPage() {
     cityChecked,
     selectedCategory,
     showAllChecked,
-    products,
+   
   ]);
 
-  
   const filterProducts = () => {
     const filtered = products.filter((product) => {
-      console.log("Product:", product.name, "StoreType:", product.storeTypeSelected);
+      
 
       const matchesSearchTerm = product.name
         ?.toLowerCase()
@@ -105,11 +106,15 @@ function ProductPage() {
       const matchesVillage = storeType === "Village Store";
       const matchesCity = storeType === "City Store";
 
-      const matchesCategory = selectedCategory
-  ? product.categoryRef?.id === selectedCategory
-  : true;
+      
+      if (product.categoryRef?.id && !publishedCategoryIds.has(product.categoryRef.id)) {
+        return false;
+      }
 
-    
+      const matchesCategory = selectedCategory
+        ? product.categoryRef?.id === selectedCategory
+        : true;
+
       const villageCityCondition =
         showAllChecked || 
         (villageChecked && matchesVillage) || 
@@ -121,7 +126,6 @@ function ProductPage() {
     setFilteredProducts(filtered);
   };
 
- 
   const handleVillageChange = () => {
     setVillageChecked((prev) => {
       const newState = !prev;
@@ -155,7 +159,6 @@ function ProductPage() {
     });
   };
 
-  
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory((prev) => (prev === categoryId ? "" : categoryId));
   };
@@ -197,7 +200,7 @@ function ProductPage() {
             <div className="form-check">
               <input
                 className="form-check-input"
-                type="checkbox"
+                type="radio"
                 id="villageCheck"
                 checked={villageChecked}
                 onChange={handleVillageChange}
@@ -209,7 +212,7 @@ function ProductPage() {
             <div className="form-check">
               <input
                 className="form-check-input"
-                type="checkbox"
+                type="radio"
                 id="cityCheck"
                 checked={cityChecked}
                 onChange={handleCityChange}
@@ -244,18 +247,18 @@ function ProductPage() {
             ></div>
 
             <ul className="list-unstyled">
-              {categories.map((cat) => (
-               <li
-               key={cat.id} 
-               className={`d-flex align-items-center p-2 mb-2 border rounded ${
-                 selectedCategory === cat.id ? "bg-dark text-white" : ""
-               }`}
-               style={{ cursor: "pointer" }}
-               onClick={() => handleCategoryClick(cat.id)}
-             >
+              {publishedCategories.map((cat) => (
+                <li
+                  key={cat.id} 
+                  className={`categoryProducts   d-flex align-items-center p-2 mb-2 border rounded ${
+                    selectedCategory === cat.id ? "bg-dark text-white" : ""
+                  }`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleCategoryClick(cat.id)}
+                >
                   <span style={{ fontSize: "1.5rem", marginRight: "10px" }}>
                     <img
-                      src={cat?.categoryImage } 
+                      src={cat?.categoryImage} 
                       alt="Category"
                       className="img-fluid"
                       style={{ maxHeight: "20px" }}
@@ -276,7 +279,7 @@ function ProductPage() {
                 <input
                   type="text"
                   className="form-control search-input text-center"
-                  placeholder="Search..."
+                  placeholder="Search for a product"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   style={{ width: "300px", margin: "0 auto" }}

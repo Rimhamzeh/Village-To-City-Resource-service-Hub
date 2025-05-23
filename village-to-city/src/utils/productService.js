@@ -16,19 +16,21 @@ const productsRef = collection(database, "products");
 const categoriesRef = collection(database, "categories");
 
 export const createProduct = async (productData) => {
-  try {
-    const docRef = await addDoc(productsRef, productData);
+  const productsRef = collection(database, "products");
 
-    await setDoc(doc(productsRef, docRef.id), {
-      ...productData,
-      id: docRef.id,
-    });
+  
+  const q = query(
+    productsRef,
+    where("storeRef", "==", productData.storeRef),
+    where("name", "==", productData.name)
+  );
 
-    return { id: docRef.id, ...productData };
-  } catch (error) {
-    console.error("Error adding product: ", error);
-    throw error;
+  const snapshot = await getDocs(q);
+  if (!snapshot.empty) {
+    throw new Error("DUPLICATE_PRODUCT");
   }
+
+  await addDoc(productsRef, productData);
 };
 
 export const createCategory = async (categoryData) => {

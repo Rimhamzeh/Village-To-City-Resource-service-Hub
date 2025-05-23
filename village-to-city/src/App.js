@@ -1,4 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+
 import Navbar from './components/navbar/navbar';
 import Home from './components/HomePage/home';
 import Product from './components/pages/product'; 
@@ -13,8 +15,9 @@ import AdminDashboard from './components/adminDashboard/adminDashboard';
 import MenuProduct from "./components/adminDashboard/MenuOfProducts/MenuProducts";
 import MenuCategories from "./components/adminDashboard/menuBar/menuCategories";
 import MenuOrders from "./components/adminDashboard/menuBar/menuOrders";
-import MenyBuyers from "./components/adminDashboard/menuBar/menuSellers";
+import MenuSellers from "./components/adminDashboard/menuBar/menuSeller";
 import MenuSellerRequest from "./components/adminDashboard/menuBar/menuSellerRequest";
+import MenuBuyersRequest from "./components/adminDashboard/menuBar/menuBuyersRequest";
 
 
 import { MainContextProvider } from './utils/context';
@@ -41,6 +44,7 @@ function MainLayout() {
 
   return (
     <>
+    <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -72,8 +76,9 @@ function MainLayout() {
           <Route path="MenuProducts" element={<MenuProduct />} />
           <Route path="menuCategories" element={<MenuCategories />} />
           <Route path="menuOrders" element={<MenuOrders />} />
-          <Route path="menuBuyers" element={<MenyBuyers />} />
+          <Route path="menuSeller" element={<MenuSellers />} />
           <Route path="menuSellerRequest" element={<MenuSellerRequest />} />
+          <Route path="menuBuyersRequest" element={<MenuBuyersRequest/>} />
         </Route>
       </Routes>
     </>

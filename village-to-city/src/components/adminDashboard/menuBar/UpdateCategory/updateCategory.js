@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { updateCategory } from "../../../../utils/productService";
 import { IoCloseSharp } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 function UpdateCategory({ category, handleClose, refreshCategories }) {
   const [inputs, setInputs] = useState({
@@ -27,19 +28,34 @@ function UpdateCategory({ category, handleClose, refreshCategories }) {
   };
 
   const handleSubmit = async () => {
-    if (!inputs.name || !inputs.description) {
-      alert("Please fill in all fields.");
+    if (!inputs.name || !inputs.description || !inputs.categoryImage) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "Please fill in all fields.",
+        confirmButtonColor: "#3085d6",
+      });
       return;
     }
 
     try {
-      await updateCategory(category.id, inputs); 
-      alert("Category updated!");
-      refreshCategories(); 
-      handleClose(); 
+      await updateCategory(category.id, inputs);
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Category updated successfully!",
+        confirmButtonColor: "#3085d6",
+      });
+      refreshCategories();
+      handleClose();
     } catch (error) {
       console.error("Error updating category:", error);
-      alert("Failed to update category.");
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Failed to update category.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
 
@@ -89,7 +105,12 @@ function UpdateCategory({ category, handleClose, refreshCategories }) {
             <img
               src={inputs.categoryImage}
               alt="Category Icon"
-              style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "8px" }}
+              style={{
+                width: "50px",
+                height: "50px",
+                objectFit: "cover",
+                borderRadius: "8px",
+              }}
             />
           </div>
         )}
@@ -101,7 +122,9 @@ function UpdateCategory({ category, handleClose, refreshCategories }) {
           className="form-check-input"
           id="published"
           checked={inputs.published}
-          onChange={() => setInputs((prev) => ({ ...prev, published: !prev.published }))}
+          onChange={() =>
+            setInputs((prev) => ({ ...prev, published: !prev.published }))
+          }
         />
         <label className="form-check-label" htmlFor="published">
           Mark as Published

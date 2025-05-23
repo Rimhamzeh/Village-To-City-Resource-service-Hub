@@ -1,5 +1,10 @@
-const storePath = "/";
+const storePath = "/Store";
 const cartPath = "/cart";
-
+const productPath = "/product";
+const homePath = "/";
+const contactPath = "#ContactUs";
 export const isStoreSelected = (currentPath) => currentPath === storePath;
 export const isCartSelected = (currentPath) => currentPath === cartPath;
+export const isProductSelected = (currentPath) => currentPath === productPath;
+export const isHomeSelected = (currentPath) => currentPath === homePath;
+export const isContactSelected= (currentPath) => currentPath === homePath;

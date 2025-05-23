@@ -41,19 +41,20 @@ function MenuBar({ isMenuOpened, User, role ,userId }) {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/adminDashboard/menuBuyers">
+              <Link className="nav-link" to="/adminDashboard/menuSeller">
                 <BsFillPersonFill /> Sellers
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/adminDashboard/menuOrders">
-                <LiaJediOrder /> Orders
+              <Link className="nav-link" to="/adminDashboard/menuSellerRequest">
+                <BsFillPersonFill /> Sellers Request
               </Link>
             </li>
+           
             <li className="nav-item">
-              <Link className="nav-link" to="/adminDashboard/menuSellerRequest">
+              <Link className="nav-link" to="/adminDashboard/menuBuyersRequest">
                 <BiSolidMessageAltDetail />
-                Buyers Requests
+                Buyers  Reviews
               </Link>
             </li>
             <li className="nav-item">

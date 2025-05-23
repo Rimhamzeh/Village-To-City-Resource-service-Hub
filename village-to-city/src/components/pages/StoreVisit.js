@@ -102,12 +102,14 @@ const StoreVisit = () => {
       <div className="product container mt-4">
         {products.length > 0 ? (
           products.map((product) => (
+            product.published &&(
             <ProductCard
               key={product.id}
               product={product}
               showActions={true}
               showStoreButton={false}
             />
+            )
           ))
         ) : (
           <p className="text-center">No products available for this store.</p>

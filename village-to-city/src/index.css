@@ -13,6 +13,8 @@
 @import "./components/cart-card/cart-card.css";
 @import "./styles/cart.css";
 @import "./styles/checkout.css";
+
+@import 'react-toastify/dist/ReactToastify.css';
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
