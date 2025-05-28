@@ -15,6 +15,35 @@ function ContactForm() {
  const handleSubmit = async (e) => {
   e.preventDefault();
 
+  if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim() || !message.trim()) {
+    Swal.fire({
+      icon: "warning",
+      title: "Incomplete Form",
+      text: "Please fill in all the fields before submitting.",
+    });
+    return;
+  }
+  const lebanesePhoneRegex =/^(?:\+961|0)?(1\d{1}|3\d{1}|7[0-9]|8[1-9])?\d{6,7}$/;
+      if (!lebanesePhoneRegex.test(phone.trim())) {
+        Swal.fire({
+          icon: "warning",
+          title: "Invalid Phone Number",
+          text: "Please enter a valid phone number.",
+        });
+        return;
+      }
+       const isValidEmail = (email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+          };
+          if (!isValidEmail(email)) {
+            Swal.fire({
+              icon: "warning",
+              title: "Oops...",
+              text: "Please enter a valid Email!",
+            });
+            return;
+          }
   try {
     await addDoc(collection(database, "buyerRequests"), {
       firstName,

@@ -88,8 +88,7 @@ function Checkout() {
       });
       return;
     }
-    const lebanesePhoneRegex =
-      /^(?:\+961|0)?(1\d{1}|3\d{1}|7[0-9]|8[1-9]) ?\d{6,7}$/;
+    const lebanesePhoneRegex =/^(?:\+961|0)?(1\d{1}|3\d{1}|7[0-9]|8[1-9])?\d{6,7}$/;
     if (!lebanesePhoneRegex.test(phone.trim())) {
       Swal.fire({
         icon: "warning",

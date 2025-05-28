@@ -36,9 +36,32 @@ function SignUp({ setRegisterMode }) {
   };
 
   async function handleUploadAndSubmit() {
+    if (!inputs.firstName ||!inputs.lastName || 
+        !inputs.phoneNumber||!inputs.storeName||
+        !inputs.storeSince||!inputs.description||
+        !inputs.location||!inputs.password
+
+       ) {
+        setError("Please Fill all the Fields");
+        return;
+      }
+
     if (!image) {
       setError("Please select an image!");
     }
+  
+
+ 
+      
+const lebanesePhoneRegex =/^(?:\+961|0)?(1\d{1}|3\d{1}|7[0-9]|8[1-9])?\d{6,7}$/;
+if (!lebanesePhoneRegex.test(inputs.phoneNumber.trim())) {
+  Swal.fire({
+    icon: "warning",
+    title: "Invalid Phone Number",
+    text: "Please enter a valid phone number.",
+  });
+  return;
+}
     const toBase64 = (file) =>
       new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -68,15 +91,7 @@ function SignUp({ setRegisterMode }) {
         setError("Please select a store type.");
         return;
       }
-       if (!inputs.firstName ||!inputs.lastName || 
-        !inputs.phoneNumber||!inputs.storeName||
-        !inputs.storeSince||!inputs.description||
-        !inputs.location||!inputs.password
-
-       ) {
-        setError("Please Fill all the Fields");
-        return;
-      }
+       
         
       
       const result = await registerUser(
